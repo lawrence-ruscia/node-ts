@@ -1,7 +1,8 @@
 import express from 'express';
 import 'dotenv/config';
 import path from 'node:path';
-import { rootRouter } from './routers/root.router.js';
+import type { Request, Response, NextFunction } from 'express';
+import type { CustomError } from './shared/domain/errors/error.js';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -16,12 +17,12 @@ app.set('views', path.join(dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // Routers
-app.use('/', rootRouter);
 
 // Error Handler Middleware
-app.use((err, req, res, next) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
   console.error(err);
-  res.status(err.statusCode || 500).send(err.message);
+  res.status(err?.statusCode || 500).send(err.message);
 });
 
 app.listen(PORT, (err) => {
